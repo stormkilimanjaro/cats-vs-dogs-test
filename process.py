@@ -49,9 +49,9 @@ def create_train_data():
     training_data = []
     exceptions = 0
     exception_list = []
-    #print (os.listdir(TRAIN_DIR))
+
     for img in tqdm(os.listdir(TRAIN_DIR)):
-        #path = os.path.join(TRAIN_DIR, img)
+       
         if img != ".DS_Store":
             path = os.path.join(TRAIN_DIR, img)
             try:
@@ -85,7 +85,7 @@ def create_test_data():
         if img != ".DS_Store":
             path = os.path.join(TEST_DIR, img)
             img_num = img.split('.')[0]
-            #img_num = re.findall(r"[0-9]+",img)
+    
             try:
                 img_data = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
                 img_data = cv2.resize(img_data, (IMG_SIZE, IMG_SIZE))
@@ -112,6 +112,8 @@ X_train = np.array([i[0] for i in train]).reshape(-1, IMG_SIZE, IMG_SIZE, 1) #im
 y_train = [i[1] for i in train] #labels
 
 '''
+Debugging statement to check if the labels have been created successfully:
+
 for i in train:
     print (i[1])
 '''
@@ -141,6 +143,8 @@ convnet = max_pool_2d(convnet, 5) #Changed from 5 to 2
 
 
 '''
+# Additional layers to make the model more accurate.
+
 #1.5: Convolution layer with 128 filters, each 5x5
 convnet = conv_2d(convnet, 128, 5, activation='relu')
 
@@ -167,11 +171,11 @@ convnet = fully_connected(convnet, 1024, activation='relu') #changed number of n
 convnet = dropout(convnet, 0.8) #Changed from 0.8 to 0.5
 
 #Step 4: Fully connected layer with 2 outputs
-convnet = fully_connected(convnet, 2, activation='linear') #changed from 1 to 2, softmax to linear
+convnet = fully_connected(convnet, 2, activation='softmax') 
 convnet = regression(convnet, optimizer='adam', learning_rate=LR, loss='categorical_crossentropy', name='targets')
 
 model = tflearn.DNN(convnet, tensorboard_dir='log', tensorboard_verbose=0)
-#model.fit({'input': X_train}, {'targets': y_train}, n_epoch=10, validation_set=({'input': X_test}, {'targets': y_test}), snapshot_step=500, show_metric=True, run_id=MODEL_NAME)
+
 model.fit({'input': X_train}, {'targets': y_train}, n_epoch=10, validation_set=({'input': X_test}, {'targets': y_test}), snapshot_step=500, show_metric=True, run_id=MODEL_NAME)
 
 '''
