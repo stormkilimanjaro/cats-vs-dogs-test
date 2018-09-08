@@ -31,7 +31,7 @@ def create_label(image_name):
     """
     word_label = image_name.split('.')[-2]
     word_label = re.findall(r"[A-Z][a-z]+", word_label)
-    print (word_label)
+    #print (word_label)
     if word_label[0] == 'Cat':
         #print ("Word label found: %s" % word_label)
         return np.array([1,0])
